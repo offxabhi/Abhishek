@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Penny Stock Predictor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px 30px;
+            border-bottom: 2px solid #fff;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        header nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        header nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid #fff;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+
+        header nav a:hover {
+            background: #fff;
+            color: #2a5298;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 20px;
+        }
+
+        .price-item p {
+            font-size: 22px;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .chart-container {
+            margin-top: 30px;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .chart-container.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        footer {
+            margin-top: 30px;
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>Penny Stock Predictor</h1>
+                <p>Predict stock prices using advanced LSTM neural networks</p>
+            </div>
+            <nav>
+                <a href="/login">Login</a>
+                <a href="/signup">Signup</a>
+            </nav>
+        </header>
+
+        <div class="input-section">
+            <div class="input-group">
+                <label for="stockSymbol">Enter Stock Symbol:</label>
+                <input type="text" id="stockSymbol" placeholder="e.g., POWERGRID.NS, RELIANCE.NS" value="POWERGRID.NS">
+                <button id="predictBtn">Predict</button>
+            </div>
+            <div class="examples">
+                <p>Examples: POWERGRID.NS, RELIANCE.NS, TATAMOTORS.NS, INFY.NS</p>
+            </div>
+        </div>
+
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+            <p>Analyzing data and making predictions...</p>
+        </div>
+
+        <div id="results" class="hidden">
+            <div class="current-info">
+                <h2>Stock: <span id="stockName"></span></h2>
+                <div class="price-box">
+                    <div class="price-item">
+                        <h3>Current Price</h3>
+                        <p id="currentPrice">-</p>
+                    </div>
+                    <div class="price-item">
+                        <h3>Next Day Prediction</h3>
+                        <p id="nextPrediction">-</p>
+                    </div>
+                    <div class="price-item">
+                        <h3>Model Accuracy</h3>
+                        <p id="modelAccuracy">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chart-container" id="chartSection">
+                <canvas id="stockChart"></canvas>
+            </div>
+        </div>
+
+        <div id="error" class="hidden">
+            <p class="error-message"></p>
+        </div>
+
+        <footer>
+            <p>Disclaimer: Stock market predictions are not guaranteed and should not be used as financial advice.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Number counter animation
+        function animateValue(id, start, end, duration) {
+            let obj = document.getElementById(id);
+            let range = end - start;
+            let startTime = null;
+
+            function step(currentTime) {
+                if (!startTime) startTime = currentTime;
+                let progress = Math.min((currentTime - startTime) / duration, 1);
+                obj.textContent = (start + range * progress).toFixed(2);
+                if (progress < 1) requestAnimationFrame(step);
+            }
+            requestAnimationFrame(step);
+        }
+
+        // Smooth chart reveal
+        function revealChart() {
+            const chartSection = document.getElementById("chartSection");
+            chartSection.classList.add("visible");
+        }
+
+        // Example trigger after prediction (simulate)
+        document.getElementById("predictBtn").addEventListener("click", () => {
+            document.getElementById("results").classList.remove("hidden");
+
+            // Animate counters
+            animateValue("currentPrice", 0, 210.45, 2000);
+            animateValue("nextPrediction", 0, 215.90, 2000);
+            animateValue("modelAccuracy", 0, 92.5, 2000);
+
+            // Reveal chart after 1 second
+            setTimeout(revealChart, 1000);
+        });
+    </script>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
